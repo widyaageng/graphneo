@@ -9,26 +9,22 @@
 3rd: match(n)-[r]-(n) return count(r)
 
 
-4th: match p = allShortestPaths((source)-[r:TO*]-(destination)) where source.Name='BRCA1' AND destination.Name = 'NBR1' return [n IN NODES(p)| n.Name] as Paths
+4th: match p = allShortestPaths((source)-[r*..]-(destination)) where source.Name='BRCA1' AND destination.Name = 'NBR1' return [n IN NODES(p)| n.Name] as Paths
 
 
 5th: match (n:TrialGene)-[r]->()
 
 return n.Name as Node, count(r) as Outdegree
 
-order by Outdegree
-
-union
-
-match (a:TrialGene)-[r]->(leaf)
-
-where not((leaf)-->())
-
-return leaf.Name as Node, 0 as Outdegree
+order by Outdegree desc
 
 
 6th: match (n:TrialGene)-[r]-() with n as nodes, count(distinct r) as degree return degree, count(nodes) order by degree asc
 
+
+
+
+----------------------------------------------------------------------------------------
 
 
 option 1st: match (n)-[r]->(m) where m <> n return distinct n, m, count(r) as myCount order by myCount desc limit 1
